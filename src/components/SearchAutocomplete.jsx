@@ -9,6 +9,7 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
   const [loading, setLoading] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
   const inputRef = useRef(null)
+  const dropdownRef = useRef(null)
 
   const debouncedSearch = useRef(
     debounce(async (searchQuery) => {
@@ -40,6 +41,18 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
     debouncedSearch(query)
   }, [query, debouncedSearch])
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
+          inputRef.current && !inputRef.current.contains(event.target)) {
+        setShowDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   const handleSelect = (peptide) => {
     onSelect(peptide)
     setQuery(peptide.name)
@@ -58,7 +71,12 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
             setQuery(e.target.value)
             setShowDropdown(true)
           }}
-          onFocus={() => setShowDropdown(true)}
+          onFocus={() => {
+            setShowDropdown(true)
+            if (query.length >= 2) {
+              debouncedSearch(query)
+            }
+          }}
           placeholder="Type to search peptides..."
           className="input pl-10"
         />
@@ -70,7 +88,10 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
       </div>
 
       {showDropdown && results.length > 0 && (
-        <div className="absolute z-10 w-full mt-2 bg-dark-card border border-dark-border rounded-lg shadow-glow-md max-h-60 overflow-y-auto">
+        <div 
+          ref={dropdownRef}
+          className="absolute z-10 w-full mt-2 bg-dark-card border border-dark-border rounded-lg shadow-glow-md max-h-80 overflow-y-auto"
+        >
           {results.map((peptide, idx) => (
             <button
               key={idx}
@@ -78,14 +99,36 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
               onClick={() => handleSelect(peptide)}
               className="w-full px-4 py-3 text-left hover:bg-dark-hover transition-colors border-b border-dark-border last:border-b-0 group"
             >
-              <div className="font-medium text-gray-100 group-hover:text-gradient transition-all">{peptide.name}</div>
-              {peptide.description && (
-                <div className="text-sm text-gray-500 mt-1 line-clamp-1">
-                  {peptide.description}
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-gray-100 group-hover:text-gradient transition-all truncate">
+                    {peptide.name}
+                  </div>
+                  {peptide.description && (
+                    <div className="text-sm text-gray-500 mt-1 line-clamp-2">
+                      {peptide.description}
+                    </div>
+                  )}
                 </div>
-              )}
+                {peptide.category && (
+                  <span className="badge bg-dark-bg text-gray-400 text-xs shrink-0 capitalize">
+                    {peptide.category}
+                  </span>
+                )}
+              </div>
             </button>
           ))}
+          {results.length >= 20 && (
+            <div className="px-4 py-2 text-xs text-gray-500 text-center bg-dark-bg">
+              Showing top 20 results - refine search for more
+            </div>
+          )}
+        </div>
+      )}
+
+      {showDropdown && query.length >= 2 && results.length === 0 && !loading && (
+        <div className="absolute z-10 w-full mt-2 bg-dark-card border border-dark-border rounded-lg shadow-glow-md px-4 py-3 text-center text-gray-500">
+          No peptides found for "{query}"
         </div>
       )}
     </div>
