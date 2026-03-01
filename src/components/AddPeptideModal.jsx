@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { collection, addDoc } from 'firebase/firestore'
 import { db } from '../firebase/config'
-import { X } from 'lucide-react'
+import { X, Check } from 'lucide-react'
 import { addDays } from 'date-fns'
 import SearchAutocomplete from './SearchAutocomplete'
 
@@ -40,11 +40,11 @@ function AddPeptideModal({ userId, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h3 className="text-xl font-bold text-gray-900">Add New Peptide</h3>
+        <div className="sticky top-0 bg-dark-card border-b border-dark-border px-6 py-4 flex items-center justify-between backdrop-blur-xl">
+          <h3 className="text-xl font-bold text-gradient">Add New Peptide</h3>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-dark-hover rounded-lg transition-colors text-gray-400 hover:text-gray-100"
           >
             <X className="w-5 h-5" />
           </button>
@@ -52,7 +52,7 @@ function AddPeptideModal({ userId, onClose }) {
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Search Peptide
             </label>
             <SearchAutocomplete
@@ -64,7 +64,7 @@ function AddPeptideModal({ userId, onClose }) {
           {selectedPeptide && (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Dosage
                 </label>
                 <input
@@ -72,23 +72,23 @@ function AddPeptideModal({ userId, onClose }) {
                   value={dosage}
                   onChange={(e) => setDosage(e.target.value)}
                   placeholder="e.g., 250mcg, 5mg"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                  className="input"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Frequency
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setFrequency('daily')}
-                    className={`px-4 py-3 rounded-lg font-medium transition-all ${
+                    className={`px-4 py-3 rounded-lg font-medium transition-all border ${
                       frequency === 'daily'
-                        ? 'bg-primary text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-gradient-to-r from-accent-primary to-accent-secondary text-white border-transparent shadow-glow-sm'
+                        : 'bg-dark-bg text-gray-400 border-dark-border hover:border-accent-primary/50'
                     }`}
                   >
                     Daily
@@ -96,10 +96,10 @@ function AddPeptideModal({ userId, onClose }) {
                   <button
                     type="button"
                     onClick={() => setFrequency('weekly')}
-                    className={`px-4 py-3 rounded-lg font-medium transition-all ${
+                    className={`px-4 py-3 rounded-lg font-medium transition-all border ${
                       frequency === 'weekly'
-                        ? 'bg-primary text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-gradient-to-r from-accent-primary to-accent-secondary text-white border-transparent shadow-glow-sm'
+                        : 'bg-dark-bg text-gray-400 border-dark-border hover:border-accent-primary/50'
                     }`}
                   >
                     Weekly
@@ -110,9 +110,16 @@ function AddPeptideModal({ userId, onClose }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {loading ? 'Adding...' : 'Add to Stack'}
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <>
+                    <Check className="w-5 h-5" />
+                    Add to Stack
+                  </>
+                )}
               </button>
             </>
           )}

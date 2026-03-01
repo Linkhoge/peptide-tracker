@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { debounce } from 'lodash'
-import { Search } from 'lucide-react'
+import { Search, Loader2 } from 'lucide-react'
 import { searchPeptides, getCachedResults } from '../utils/searchCache'
 
 function SearchAutocomplete({ onSelect, selectedValue }) {
@@ -49,7 +49,7 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
   return (
     <div className="relative">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
         <input
           ref={inputRef}
           type="text"
@@ -60,25 +60,25 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
           }}
           onFocus={() => setShowDropdown(true)}
           placeholder="Type to search peptides..."
-          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+          className="input pl-10"
         />
         {loading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <Loader2 className="w-5 h-5 text-accent-primary animate-spin" />
           </div>
         )}
       </div>
 
       {showDropdown && results.length > 0 && (
-        <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-10 w-full mt-2 bg-dark-card border border-dark-border rounded-lg shadow-glow-md max-h-60 overflow-y-auto">
           {results.map((peptide, idx) => (
             <button
               key={idx}
               type="button"
               onClick={() => handleSelect(peptide)}
-              className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+              className="w-full px-4 py-3 text-left hover:bg-dark-hover transition-colors border-b border-dark-border last:border-b-0 group"
             >
-              <div className="font-medium text-gray-900">{peptide.name}</div>
+              <div className="font-medium text-gray-100 group-hover:text-gradient transition-all">{peptide.name}</div>
               {peptide.description && (
                 <div className="text-sm text-gray-500 mt-1 line-clamp-1">
                   {peptide.description}

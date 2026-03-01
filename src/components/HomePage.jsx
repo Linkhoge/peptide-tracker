@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { collection, onSnapshot, query } from 'firebase/firestore'
 import { db } from '../firebase/config'
-import { Plus } from 'lucide-react'
+import { Plus, Sparkles } from 'lucide-react'
 import PeptideCard from './PeptideCard'
 import AddPeptideModal from './AddPeptideModal'
 
@@ -30,8 +30,8 @@ function HomePage({ userId }) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="animate-pulse space-y-4">
-          <div className="h-32 bg-gray-200 rounded-xl"></div>
-          <div className="h-32 bg-gray-200 rounded-xl"></div>
+          <div className="h-32 bg-dark-card rounded-xl border border-dark-border"></div>
+          <div className="h-32 bg-dark-card rounded-xl border border-dark-border"></div>
         </div>
       </div>
     )
@@ -40,26 +40,34 @@ function HomePage({ userId }) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {peptides.length === 0 ? (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Start Your First Stack</h2>
-            <p className="text-gray-500 max-w-md mx-auto">
-              Track your peptide cycles with precision. Add your first peptide to begin monitoring dosages and schedules.
-            </p>
+        <div className="flex flex-col items-center justify-center min-h-[70vh] text-center">
+          <div className="mb-12 relative">
+            <div className="absolute inset-0 blur-3xl opacity-30">
+              <div className="w-64 h-64 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-full"></div>
+            </div>
+            <div className="relative">
+              <Sparkles className="w-16 h-16 text-accent-primary mx-auto mb-6 animate-pulse" />
+              <h2 className="text-4xl font-bold text-gradient mb-4">Start Your First Stack</h2>
+              <p className="text-gray-400 max-w-md mx-auto text-lg">
+                Track peptide cycles with precision. Monitor dosages, schedules, and adherence in one clean interface.
+              </p>
+            </div>
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="group relative w-20 h-20 rounded-full bg-gradient-to-br from-primary to-secondary shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            className="group relative w-24 h-24 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary shadow-glow-lg hover:shadow-glow-lg transition-all duration-300 hover:scale-110 animate-pulse-glow"
           >
-            <Plus className="w-10 h-10 text-white absolute inset-0 m-auto transition-transform group-hover:rotate-90 duration-300" />
+            <Plus className="w-12 h-12 text-white absolute inset-0 m-auto transition-transform group-hover:rotate-90 duration-500" />
           </button>
         </div>
       ) : (
         <div>
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900">Your Stack</h2>
-              <p className="text-gray-500 mt-1">{peptides.length} peptide{peptides.length !== 1 ? 's' : ''} in cycle</p>
+              <h2 className="text-4xl font-bold text-gradient mb-2">Your Stack</h2>
+              <p className="text-gray-400">
+                <span className="text-accent-primary font-semibold">{peptides.length}</span> peptide{peptides.length !== 1 ? 's' : ''} in active cycle
+              </p>
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
