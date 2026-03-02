@@ -1,13 +1,50 @@
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { debounce } from 'lodash'
 import { Search, Loader2, Info } from 'lucide-react'
 import { searchPeptides, getCachedResults } from '../utils/searchCache'
 import { getPeptideInfo } from '../data/peptideInfo'
 
+function Tooltip({ peptide, info, position }) {
+  if (!position) return null
+
+  return createPortal(
+    <div
+      className="fixed pointer-events-none z-[9999]"
+      style={{
+        left: `${position.x + 15}px`,
+        top: `${position.y + 15}px`,
+      }}
+    >
+      <div className="bg-dark-card border border-accent-primary/50 rounded-lg p-3 shadow-glow-lg w-64 animate-in fade-in duration-150">
+        <div className="text-xs font-semibold text-gray-100 mb-2">{peptide.name}</div>
+        {info.dosage && (
+          <div className="text-xs mb-2">
+            <span className="text-accent-primary font-medium">Dosage:</span>
+            <div className="text-gray-300 mt-0.5">{info.dosage.standard}</div>
+            {info.dosage.range && (
+              <div className="text-gray-400 mt-0.5">Range: {info.dosage.range}</div>
+            )}
+          </div>
+        )}
+        {info.uses && info.uses.length > 0 && (
+          <div className="text-xs">
+            <span className="text-accent-primary font-medium">Uses:</span>
+            <div className="text-gray-400 mt-0.5">{info.uses.slice(0, 3).join(', ')}</div>
+          </div>
+        )}
+      </div>
+    </div>,
+    document.body
+  )
+}
+
 function SearchAutocomplete({ onSelect, selectedValue }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
+  const [hoveredPeptide, setHoveredPeptide] = useState(null)
+  const [tooltipPosition, setTooltipPosition] = useState(null)
   const inputRef = useRef(null)
 
   const debouncedSearch = useRef(
@@ -44,6 +81,18 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
     onSelect(peptide)
     setQuery('')
     setResults([])
+    setHoveredPeptide(null)
+    setTooltipPosition(null)
+  }
+
+  const handleMouseMove = (e, peptide) => {
+    setHoveredPeptide(peptide)
+    setTooltipPosition({ x: e.clientX, y: e.clientY })
+  }
+
+  const handleMouseLeave = () => {
+    setHoveredPeptide(null)
+    setTooltipPosition(null)
   }
 
   return (
@@ -76,7 +125,7 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
               <div
                 key={idx}
                 onClick={() => handleSelect(peptide)}
-                className="relative card py-2 px-3 hover:border-accent-primary/50 transition-all cursor-pointer group overflow-visible"
+                className="relative card py-2 px-3 hover:border-accent-primary/50 transition-all cursor-pointer group"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
@@ -102,30 +151,12 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
                       </span>
                     )}
                     {info && (
-                      <div className="relative group/tooltip">
-                        <div className="p-1 rounded-lg bg-accent-primary/10 border border-accent-primary/30 cursor-help">
-                          <Info className="w-3.5 h-3.5 text-accent-primary" />
-                        </div>
-                        <div className="absolute left-full top-0 ml-2 invisible group-hover/tooltip:visible opacity-0 group-hover/tooltip:opacity-100 transition-all duration-200 z-[100] pointer-events-none">
-                          <div className="bg-dark-card border border-accent-primary/30 rounded-lg p-3 shadow-glow-md w-64">
-                            <div className="text-xs font-semibold text-gray-100 mb-2">{peptide.name}</div>
-                            {info.dosage && (
-                              <div className="text-xs mb-2">
-                                <span className="text-accent-primary font-medium">Dosage:</span>
-                                <div className="text-gray-300 mt-0.5">{info.dosage.standard}</div>
-                                {info.dosage.range && (
-                                  <div className="text-gray-400 mt-0.5">Range: {info.dosage.range}</div>
-                                )}
-                              </div>
-                            )}
-                            {info.uses && info.uses.length > 0 && (
-                              <div className="text-xs">
-                                <span className="text-accent-primary font-medium">Uses:</span>
-                                <div className="text-gray-400 mt-0.5">{info.uses.slice(0, 3).join(', ')}</div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                      <div
+                        onMouseMove={(e) => handleMouseMove(e, peptide)}
+                        onMouseLeave={handleMouseLeave}
+                        className="p-1 rounded-lg bg-accent-primary/10 border border-accent-primary/30 cursor-help transition-all hover:bg-accent-primary/20 hover:border-accent-primary/50"
+                      >
+                        <Info className="w-3.5 h-3.5 text-accent-primary" />
                       </div>
                     )}
                   </div>
@@ -140,6 +171,14 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
         <div className="card text-center text-gray-500 py-4 text-sm">
           No results for "{query}"
         </div>
+      )}
+
+      {hoveredPeptide && tooltipPosition && (
+        <Tooltip
+          peptide={hoveredPeptide}
+          info={getPeptideInfo(hoveredPeptide.name)}
+          position={tooltipPosition}
+        />
       )}
     </div>
   )
