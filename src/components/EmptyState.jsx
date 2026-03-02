@@ -1,8 +1,12 @@
 import { Plus, Sparkles, Target, Zap, BarChart3 } from 'lucide-react'
+import WireframeGrid from './WireframeGrid'
 
 function EmptyState({ onAddClick }) {
   return (
     <div className="min-h-screen relative overflow-hidden">
+      {/* 3D Wireframe Grid Background */}
+      <WireframeGrid />
+      
       {/* Animated gradient mesh background */}
       <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/5 via-transparent to-accent-secondary/5 animate-gradient-shift"></div>
       
