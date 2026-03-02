@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { collection, onSnapshot, query } from 'firebase/firestore'
 import { db } from '../firebase/config'
-import { Plus, Sparkles } from 'lucide-react'
+import { Plus, Sparkles, Calendar, TrendingUp, Shield, Clock } from 'lucide-react'
 import PeptideCard from './PeptideCard'
 import AddPeptideModal from './AddPeptideModal'
 
@@ -37,28 +37,86 @@ function HomePage({ userId }) {
     )
   }
 
+  const features = [
+    {
+      icon: Calendar,
+      title: 'Cycle Tracking',
+      description: 'Monitor your complete peptide cycles with precision timing'
+    },
+    {
+      icon: Clock,
+      title: 'Dose Scheduling',
+      description: 'Never miss a dose with intelligent scheduling and reminders'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Progress Analytics',
+      description: 'Visualize adherence and track your progress over time'
+    },
+    {
+      icon: Shield,
+      title: 'Private & Secure',
+      description: 'Your data stays encrypted and completely private'
+    }
+  ]
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {peptides.length === 0 ? (
-        <div className="flex flex-col items-center justify-center min-h-[70vh] text-center">
-          <div className="mb-12 relative">
-            <div className="absolute inset-0 blur-3xl opacity-30">
-              <div className="w-64 h-64 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-full"></div>
+        <div className="min-h-[80vh] flex flex-col items-center justify-center">
+          {/* Hero Section */}
+          <div className="text-center mb-16 relative">
+            <div className="absolute inset-0 -top-20 flex items-center justify-center opacity-20 blur-3xl">
+              <div className="w-96 h-96 bg-gradient-to-br from-accent-primary via-accent-secondary to-accent-primary rounded-full animate-pulse"></div>
             </div>
+            
             <div className="relative">
-              <Sparkles className="w-16 h-16 text-accent-primary mx-auto mb-6 animate-pulse" />
-              <h2 className="text-4xl font-bold text-gradient mb-4">Start Your First Stack</h2>
-              <p className="text-gray-400 max-w-md mx-auto text-lg">
-                Track peptide cycles with precision. Monitor dosages, schedules, and adherence in one clean interface.
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary shadow-glow-lg mb-8 animate-pulse-glow">
+                <Sparkles className="w-10 h-10 text-white" />
+              </div>
+              
+              <h1 className="text-5xl md:text-6xl font-bold mb-6">
+                <span className="text-gradient">Start Your First Stack</span>
+              </h1>
+              
+              <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed">
+                Take control of your peptide protocols. Track cycles, monitor dosages, 
+                and maintain perfect adherence—all in one powerful, intuitive interface.
               </p>
+
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-xl font-semibold text-lg shadow-glow-lg hover:shadow-glow-xl transition-all duration-300 hover:scale-105 hover:gap-4"
+              >
+                <Plus className="w-6 h-6 transition-transform group-hover:rotate-90 duration-500" />
+                Create Your First Stack
+              </button>
             </div>
           </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="group relative w-24 h-24 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary shadow-glow-lg hover:shadow-glow-lg transition-all duration-300 hover:scale-110 animate-pulse-glow"
-          >
-            <Plus className="w-12 h-12 text-white absolute inset-0 m-auto transition-transform group-hover:rotate-90 duration-500" />
-          </button>
+
+          {/* Features Grid */}
+          <div className="w-full max-w-5xl mt-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {features.map((feature, index) => {
+                const Icon = feature.icon
+                return (
+                  <div
+                    key={index}
+                    className="group relative bg-dark-card/50 backdrop-blur-sm border border-dark-border rounded-xl p-6 hover:border-accent-primary/50 transition-all duration-300 hover:shadow-glow-sm"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/5 to-accent-secondary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <Icon className="w-6 h-6 text-accent-primary" />
+                      </div>
+                      <h3 className="font-semibold text-lg mb-2 text-white">{feature.title}</h3>
+                      <p className="text-sm text-gray-400 leading-relaxed">{feature.description}</p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
         </div>
       ) : (
         <div>
