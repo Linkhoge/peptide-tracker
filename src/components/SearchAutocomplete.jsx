@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { debounce } from 'lodash'
 import { Search, Loader2 } from 'lucide-react'
 import { searchPeptides, getCachedResults } from '../utils/searchCache'
+import { getPeptideInfo } from '../data/peptideInfo'
+import Tooltip from './Tooltip'
 
 function SearchAutocomplete({ onSelect, selectedValue }) {
   const [query, setQuery] = useState('')
@@ -59,6 +61,41 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
     setShowDropdown(false)
   }
 
+  const renderTooltipContent = (peptide) => {
+    const info = getPeptideInfo(peptide.name)
+    if (!info) {
+      return (
+        <div>
+          <div className="font-semibold text-gray-100 mb-1">{peptide.name}</div>
+          {peptide.description && (
+            <div className="text-xs text-gray-400">{peptide.description}</div>
+          )}
+        </div>
+      )
+    }
+
+    return (
+      <div className="space-y-2">
+        <div>
+          <div className="font-semibold text-gray-100">{peptide.name}</div>
+          <div className="text-xs text-gray-500">{info.fullName}</div>
+        </div>
+        {info.dosage && (
+          <div className="text-xs">
+            <span className="text-accent-primary font-medium">Dosage:</span>
+            <span className="text-gray-300 ml-1">{info.dosage.standard}</span>
+          </div>
+        )}
+        {info.uses && info.uses.length > 0 && (
+          <div className="text-xs">
+            <span className="text-accent-primary font-medium">Uses:</span>
+            <div className="text-gray-400 mt-1">{info.uses.slice(0, 3).join(', ')}</div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="relative">
       <div className="relative">
@@ -90,33 +127,34 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
       {showDropdown && results.length > 0 && (
         <div 
           ref={dropdownRef}
-          className="absolute z-10 w-full mt-2 bg-dark-card border border-dark-border rounded-lg shadow-glow-md max-h-80 overflow-y-auto"
+          className="absolute z-10 w-full mt-2 bg-dark-card border border-dark-border rounded-lg shadow-glow-md max-h-[60vh] overflow-y-auto"
         >
           {results.map((peptide, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => handleSelect(peptide)}
-              className="w-full px-4 py-3 text-left hover:bg-dark-hover transition-colors border-b border-dark-border last:border-b-0 group"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-gray-100 group-hover:text-gradient transition-all truncate">
-                    {peptide.name}
-                  </div>
-                  {peptide.description && (
-                    <div className="text-sm text-gray-500 mt-1 line-clamp-2">
-                      {peptide.description}
+            <Tooltip key={idx} content={renderTooltipContent(peptide)} delay={300}>
+              <button
+                type="button"
+                onClick={() => handleSelect(peptide)}
+                className="w-full px-4 py-3 text-left hover:bg-dark-hover transition-colors border-b border-dark-border last:border-b-0 group"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-gray-100 group-hover:text-gradient transition-all truncate">
+                      {peptide.name}
                     </div>
+                    {peptide.description && (
+                      <div className="text-sm text-gray-500 mt-1 line-clamp-2">
+                        {peptide.description}
+                      </div>
+                    )}
+                  </div>
+                  {peptide.category && (
+                    <span className="badge bg-dark-bg text-gray-400 text-xs shrink-0 capitalize">
+                      {peptide.category}
+                    </span>
                   )}
                 </div>
-                {peptide.category && (
-                  <span className="badge bg-dark-bg text-gray-400 text-xs shrink-0 capitalize">
-                    {peptide.category}
-                  </span>
-                )}
-              </div>
-            </button>
+              </button>
+            </Tooltip>
           ))}
           {results.length >= 20 && (
             <div className="px-4 py-2 text-xs text-gray-500 text-center bg-dark-bg">

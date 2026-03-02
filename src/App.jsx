@@ -4,6 +4,7 @@ import { auth } from './firebase/config'
 import { initializeAnonymousAuth } from './firebase/auth'
 import { Shield } from 'lucide-react'
 import HomePage from './components/HomePage'
+import AnnouncementBanner from './components/AnnouncementBanner'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -55,6 +56,7 @@ function App() {
           </div>
         </div>
       </header>
+      <AnnouncementBanner />
       <main>
         <HomePage userId={user?.uid} />
       </main>
