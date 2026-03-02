@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { collection, onSnapshot, query } from 'firebase/firestore'
 import { db } from '../firebase/config'
-import { Plus, Sparkles, Calendar, TrendingUp, Shield, Clock } from 'lucide-react'
+import { Plus, Calendar, TrendingUp, Shield, Clock } from 'lucide-react'
 import PeptideCard from './PeptideCard'
 import AddPeptideModal from './AddPeptideModal'
 
@@ -65,33 +65,29 @@ function HomePage({ userId }) {
       {peptides.length === 0 ? (
         <div className="min-h-[80vh] flex flex-col items-center justify-center">
           {/* Hero Section */}
-          <div className="text-center mb-16 relative">
-            <div className="absolute inset-0 -top-20 flex items-center justify-center opacity-20 blur-3xl">
-              <div className="w-96 h-96 bg-gradient-to-br from-accent-primary via-accent-secondary to-accent-primary rounded-full animate-pulse"></div>
-            </div>
+          <div className="text-center mb-16">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="text-gradient" style={{ 
+                textShadow: '0 0 1px rgba(236, 72, 153, 0.3), 0 0 2px rgba(236, 72, 153, 0.2)'
+              }}>
+                Start Your First Stack
+              </span>
+            </h1>
             
-            <div className="relative">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary shadow-glow-lg mb-8 animate-pulse-glow">
-                <Sparkles className="w-10 h-10 text-white" />
-              </div>
-              
-              <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                <span className="text-gradient">Start Your First Stack</span>
-              </h1>
-              
-              <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed">
-                Take control of your peptide protocols. Track cycles, monitor dosages, 
-                and maintain perfect adherence—all in one powerful, intuitive interface.
-              </p>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed" style={{
+              textShadow: '0 0 1px rgba(156, 163, 175, 0.3)'
+            }}>
+              Take control of your peptide protocols. Track cycles, monitor dosages, 
+              and maintain perfect adherence—all in one powerful, intuitive interface.
+            </p>
 
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-xl font-semibold text-lg shadow-glow-lg hover:shadow-glow-xl transition-all duration-300 hover:scale-105 hover:gap-4"
-              >
-                <Plus className="w-6 h-6 transition-transform group-hover:rotate-90 duration-500" />
-                Create Your First Stack
-              </button>
-            </div>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-xl font-semibold text-lg shadow-glow-lg hover:shadow-glow-xl transition-all duration-300 hover:scale-105 hover:gap-4"
+            >
+              <Plus className="w-6 h-6 transition-transform group-hover:rotate-90 duration-500" />
+              Create Your First Stack
+            </button>
           </div>
 
           {/* Features Grid */}
