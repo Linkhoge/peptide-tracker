@@ -1,17 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { debounce } from 'lodash'
-import { Search, Loader2 } from 'lucide-react'
+import { Search, Loader2, Info } from 'lucide-react'
 import { searchPeptides, getCachedResults } from '../utils/searchCache'
 import { getPeptideInfo } from '../data/peptideInfo'
-import Tooltip from './Tooltip'
 
-function SearchAutocomplete({ onSelect, selectedValue }) {
+function SearchAutocomplete({ onSelect, selectedValue, onViewInfo }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
-  const [showDropdown, setShowDropdown] = useState(false)
   const inputRef = useRef(null)
-  const dropdownRef = useRef(null)
 
   const debouncedSearch = useRef(
     debounce(async (searchQuery) => {
@@ -43,77 +40,21 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
     debouncedSearch(query)
   }, [query, debouncedSearch])
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
-          inputRef.current && !inputRef.current.contains(event.target)) {
-        setShowDropdown(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
-
   const handleSelect = (peptide) => {
     onSelect(peptide)
-    setQuery(peptide.name)
-    setShowDropdown(false)
-  }
-
-  const renderTooltipContent = (peptide) => {
-    const info = getPeptideInfo(peptide.name)
-    if (!info) {
-      return (
-        <div>
-          <div className="font-semibold text-gray-100 mb-1">{peptide.name}</div>
-          {peptide.description && (
-            <div className="text-xs text-gray-400">{peptide.description}</div>
-          )}
-        </div>
-      )
-    }
-
-    return (
-      <div className="space-y-2">
-        <div>
-          <div className="font-semibold text-gray-100">{peptide.name}</div>
-          <div className="text-xs text-gray-500">{info.fullName}</div>
-        </div>
-        {info.dosage && (
-          <div className="text-xs">
-            <span className="text-accent-primary font-medium">Dosage:</span>
-            <span className="text-gray-300 ml-1">{info.dosage.standard}</span>
-          </div>
-        )}
-        {info.uses && info.uses.length > 0 && (
-          <div className="text-xs">
-            <span className="text-accent-primary font-medium">Uses:</span>
-            <div className="text-gray-400 mt-1">{info.uses.slice(0, 3).join(', ')}</div>
-          </div>
-        )}
-      </div>
-    )
+    setQuery('')
+    setResults([])
   }
 
   return (
-    <div className="relative">
-      <div className="relative">
+    <div>
+      <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
         <input
           ref={inputRef}
           type="text"
           value={selectedValue || query}
-          onChange={(e) => {
-            setQuery(e.target.value)
-            setShowDropdown(true)
-          }}
-          onFocus={() => {
-            setShowDropdown(true)
-            if (query.length >= 2) {
-              debouncedSearch(query)
-            }
-          }}
+          onChange={(e) => setQuery(e.target.value)}
           placeholder="Type to search peptides..."
           className="input pl-10"
         />
@@ -124,48 +65,63 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
         )}
       </div>
 
-      {showDropdown && results.length > 0 && (
-        <div 
-          ref={dropdownRef}
-          className="absolute z-10 w-full mt-2 bg-dark-card border border-dark-border rounded-lg shadow-glow-md max-h-[60vh] overflow-y-auto"
-        >
-          {results.map((peptide, idx) => (
-            <Tooltip key={idx} content={renderTooltipContent(peptide)} delay={300}>
-              <button
-                type="button"
-                onClick={() => handleSelect(peptide)}
-                className="w-full px-4 py-3 text-left hover:bg-dark-hover transition-colors border-b border-dark-border last:border-b-0 group"
+      {results.length > 0 && (
+        <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-2">
+          <div className="text-xs text-gray-500 mb-2">
+            {results.length} result{results.length !== 1 ? 's' : ''} found
+          </div>
+          {results.map((peptide, idx) => {
+            const info = getPeptideInfo(peptide.name)
+            return (
+              <div
+                key={idx}
+                className="card hover:border-accent-primary/50 transition-all cursor-pointer group"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-gray-100 group-hover:text-gradient transition-all truncate">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0" onClick={() => handleSelect(peptide)}>
+                    <div className="font-medium text-gray-100 group-hover:text-gradient transition-all mb-1">
                       {peptide.name}
                     </div>
                     {peptide.description && (
-                      <div className="text-sm text-gray-500 mt-1 line-clamp-2">
+                      <div className="text-sm text-gray-500 line-clamp-2">
                         {peptide.description}
                       </div>
                     )}
+                    {info && info.dosage && (
+                      <div className="text-xs text-gray-600 mt-2">
+                        <span className="text-accent-primary">Typical: </span>
+                        {info.dosage.standard}
+                      </div>
+                    )}
                   </div>
-                  {peptide.category && (
-                    <span className="badge bg-dark-bg text-gray-400 text-xs shrink-0 capitalize">
-                      {peptide.category}
-                    </span>
-                  )}
+                  <div className="flex flex-col items-end gap-2 shrink-0">
+                    {peptide.category && (
+                      <span className="badge bg-dark-bg text-gray-400 text-xs capitalize">
+                        {peptide.category}
+                      </span>
+                    )}
+                    {info && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onViewInfo(peptide.name)
+                        }}
+                        className="flex items-center gap-1 px-2 py-1 rounded-lg bg-dark-bg border border-accent-primary/30 hover:border-accent-primary/50 transition-colors text-xs"
+                      >
+                        <Info className="w-3 h-3 text-accent-primary" />
+                        <span className="text-gray-400">Info</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </button>
-            </Tooltip>
-          ))}
-          {results.length >= 20 && (
-            <div className="px-4 py-2 text-xs text-gray-500 text-center bg-dark-bg">
-              Showing top 20 results - refine search for more
-            </div>
-          )}
+              </div>
+            )
+          })}
         </div>
       )}
 
-      {showDropdown && query.length >= 2 && results.length === 0 && !loading && (
-        <div className="absolute z-10 w-full mt-2 bg-dark-card border border-dark-border rounded-lg shadow-glow-md px-4 py-3 text-center text-gray-500">
+      {query.length >= 2 && results.length === 0 && !loading && (
+        <div className="card text-center text-gray-500 py-8">
           No peptides found for "{query}"
         </div>
       )}

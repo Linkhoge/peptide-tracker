@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { collection, addDoc } from 'firebase/firestore'
 import { db } from '../firebase/config'
-import { X, Check, Info, ToggleLeft, ToggleRight } from 'lucide-react'
+import { X, Check, ToggleLeft, ToggleRight } from 'lucide-react'
 import { addDays } from 'date-fns'
 import SearchAutocomplete from './SearchAutocomplete'
 import PeptideInfoModal from './PeptideInfoModal'
@@ -12,6 +12,7 @@ function AddPeptideModal({ userId, onClose }) {
   const [frequency, setFrequency] = useState('daily')
   const [loading, setLoading] = useState(false)
   const [showInfo, setShowInfo] = useState(false)
+  const [infoTargetPeptide, setInfoTargetPeptide] = useState(null)
   const [cycleEnabled, setCycleEnabled] = useState(false)
   const [cycleOnDays, setCycleOnDays] = useState(30)
   const [cycleOffDays, setCycleOffDays] = useState(30)
@@ -48,11 +49,20 @@ function AddPeptideModal({ userId, onClose }) {
     setLoading(false)
   }
 
+  const handleViewInfo = (peptideName) => {
+    setInfoTargetPeptide(peptideName)
+    setShowInfo(true)
+  }
+
   return (
     <>
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-          <div className="sticky top-0 bg-dark-card border-b border-dark-border px-6 py-4 flex items-center justify-between backdrop-blur-xl">
+        <div 
+          className="bg-dark-card border border-dark-border rounded-xl w-full shadow-glow-lg"
+          style={{ maxWidth: '700px', maxHeight: '85vh' }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="sticky top-0 bg-dark-card border-b border-dark-border px-6 py-4 flex items-center justify-between backdrop-blur-xl z-10 rounded-t-xl">
             <h3 className="text-xl font-bold text-gradient">Add New Peptide</h3>
             <button
               onClick={onClose}
@@ -62,148 +72,148 @@ function AddPeptideModal({ userId, onClose }) {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-gray-300">
+          <div className="overflow-y-auto" style={{ maxHeight: 'calc(85vh - 80px)' }}>
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Search Peptide
                 </label>
-                {selectedPeptide && (
-                  <button
-                    type="button"
-                    onClick={() => setShowInfo(true)}
-                    className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-dark-bg border border-accent-primary/30 hover:border-accent-primary/50 transition-colors group"
-                  >
-                    <Info className="w-4 h-4 text-accent-primary group-hover:animate-pulse" />
-                    <span className="text-xs text-gray-400 group-hover:text-gray-300">View Info</span>
-                  </button>
-                )}
+                <SearchAutocomplete
+                  onSelect={setSelectedPeptide}
+                  selectedValue={selectedPeptide?.name}
+                  onViewInfo={handleViewInfo}
+                />
               </div>
-              <SearchAutocomplete
-                onSelect={setSelectedPeptide}
-                selectedValue={selectedPeptide?.name}
-              />
-            </div>
 
-            {selectedPeptide && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Dosage
-                  </label>
-                  <input
-                    type="text"
-                    value={dosage}
-                    onChange={(e) => setDosage(e.target.value)}
-                    placeholder="e.g., 250mcg, 5mg"
-                    className="input"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Frequency
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setFrequency('daily')}
-                      className={`px-4 py-3 rounded-lg font-medium transition-all border ${
-                        frequency === 'daily'
-                          ? 'bg-gradient-to-r from-accent-primary to-accent-secondary text-white border-transparent shadow-glow-sm'
-                          : 'bg-dark-bg text-gray-400 border-dark-border hover:border-accent-primary/50'
-                      }`}
-                    >
-                      Daily
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setFrequency('weekly')}
-                      className={`px-4 py-3 rounded-lg font-medium transition-all border ${
-                        frequency === 'weekly'
-                          ? 'bg-gradient-to-r from-accent-primary to-accent-secondary text-white border-transparent shadow-glow-sm'
-                          : 'bg-dark-bg text-gray-400 border-dark-border hover:border-accent-primary/50'
-                      }`}
-                    >
-                      Weekly
-                    </button>
-                  </div>
-                </div>
-
-                <div className="card bg-dark-bg">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <h4 className="font-medium text-gray-100">Cycle Mode</h4>
-                      <p className="text-xs text-gray-500 mt-1">Track on/off cycling periods</p>
+              {selectedPeptide && (
+                <>
+                  <div className="card bg-dark-bg border-accent-primary/20">
+                    <div className="text-sm text-gray-300 mb-2">
+                      <span className="text-accent-primary font-medium">Selected:</span> {selectedPeptide.name}
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setCycleEnabled(!cycleEnabled)}
-                      className="p-1 transition-colors"
-                    >
-                      {cycleEnabled ? (
-                        <ToggleRight className="w-10 h-10 text-accent-primary" />
-                      ) : (
-                        <ToggleLeft className="w-10 h-10 text-gray-600" />
-                      )}
-                    </button>
                   </div>
 
-                  {cycleEnabled && (
-                    <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-dark-border">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-400 mb-1">
-                          On Cycle (days)
-                        </label>
-                        <input
-                          type="number"
-                          value={cycleOnDays}
-                          onChange={(e) => setCycleOnDays(parseInt(e.target.value))}
-                          min="1"
-                          className="input text-sm py-2"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-400 mb-1">
-                          Off Cycle (days)
-                        </label>
-                        <input
-                          type="number"
-                          value={cycleOffDays}
-                          onChange={(e) => setCycleOffDays(parseInt(e.target.value))}
-                          min="1"
-                          className="input text-sm py-2"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Dosage
+                    </label>
+                    <input
+                      type="text"
+                      value={dosage}
+                      onChange={(e) => setDosage(e.target.value)}
+                      placeholder="e.g., 250mcg, 5mg"
+                      className="input"
+                      required
+                    />
+                  </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {loading ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  ) : (
-                    <>
-                      <Check className="w-5 h-5" />
-                      Add to Stack
-                    </>
-                  )}
-                </button>
-              </>
-            )}
-          </form>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Frequency
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setFrequency('daily')}
+                        className={`px-4 py-3 rounded-lg font-medium transition-all border ${
+                          frequency === 'daily'
+                            ? 'bg-gradient-to-r from-accent-primary to-accent-secondary text-white border-transparent shadow-glow-sm'
+                            : 'bg-dark-bg text-gray-400 border-dark-border hover:border-accent-primary/50'
+                        }`}
+                      >
+                        Daily
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFrequency('weekly')}
+                        className={`px-4 py-3 rounded-lg font-medium transition-all border ${
+                          frequency === 'weekly'
+                            ? 'bg-gradient-to-r from-accent-primary to-accent-secondary text-white border-transparent shadow-glow-sm'
+                            : 'bg-dark-bg text-gray-400 border-dark-border hover:border-accent-primary/50'
+                        }`}
+                      >
+                        Weekly
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="card bg-dark-bg">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <h4 className="font-medium text-gray-100">Cycle Mode</h4>
+                        <p className="text-xs text-gray-500 mt-1">Track on/off cycling periods</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setCycleEnabled(!cycleEnabled)}
+                        className="p-1 transition-colors"
+                      >
+                        {cycleEnabled ? (
+                          <ToggleRight className="w-10 h-10 text-accent-primary" />
+                        ) : (
+                          <ToggleLeft className="w-10 h-10 text-gray-600" />
+                        )}
+                      </button>
+                    </div>
+
+                    {cycleEnabled && (
+                      <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-dark-border">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-400 mb-1">
+                            On Cycle (days)
+                          </label>
+                          <input
+                            type="number"
+                            value={cycleOnDays}
+                            onChange={(e) => setCycleOnDays(parseInt(e.target.value))}
+                            min="1"
+                            className="input text-sm py-2"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-400 mb-1">
+                            Off Cycle (days)
+                          </label>
+                          <input
+                            type="number"
+                            value={cycleOffDays}
+                            onChange={(e) => setCycleOffDays(parseInt(e.target.value))}
+                            min="1"
+                            className="input text-sm py-2"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <>
+                        <Check className="w-5 h-5" />
+                        Add to Stack
+                      </>
+                    )}
+                  </button>
+                </>
+              )}
+            </form>
+          </div>
         </div>
       </div>
 
-      {showInfo && selectedPeptide && (
+      {showInfo && infoTargetPeptide && (
         <PeptideInfoModal
-          peptideName={selectedPeptide.name}
-          onClose={() => setShowInfo(false)}
+          peptideName={infoTargetPeptide}
+          onClose={() => {
+            setShowInfo(false)
+            setInfoTargetPeptide(null)
+          }}
         />
       )}
     </>
