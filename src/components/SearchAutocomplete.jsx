@@ -66,7 +66,7 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
       </div>
 
       {results.length > 0 && (
-        <div className="space-y-1.5 max-h-[40vh] overflow-y-auto pr-1">
+        <div className="space-y-1.5 max-h-[40vh] overflow-y-auto overflow-x-hidden pr-1">
           <div className="text-xs text-gray-500 px-1 mb-1">
             {results.length} result{results.length !== 1 ? 's' : ''}
           </div>
@@ -76,7 +76,7 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
               <div
                 key={idx}
                 onClick={() => handleSelect(peptide)}
-                className="relative card py-2 px-3 hover:border-accent-primary/50 transition-all cursor-pointer group"
+                className="relative card py-2 px-3 hover:border-accent-primary/50 transition-all cursor-pointer group overflow-visible"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
@@ -95,33 +95,41 @@ function SearchAutocomplete({ onSelect, selectedValue }) {
                       </div>
                     )}
                   </div>
-                  {peptide.category && (
-                    <span className="badge bg-dark-hover text-gray-400 text-xs shrink-0 capitalize">
-                      {peptide.category}
-                    </span>
-                  )}
-                </div>
-
-                {info && (
-                  <div className="tooltip-hover">
-                    <Info className="w-3.5 h-3.5 text-accent-primary/50 absolute top-2 right-2" />
-                    <div className="tooltip-content">
-                      <div className="text-xs font-semibold text-gray-100 mb-1">{peptide.name}</div>
-                      {info.dosage && (
-                        <div className="text-xs mb-1">
-                          <span className="text-accent-primary font-medium">Dosage:</span>
-                          <div className="text-gray-300">{info.dosage.standard}</div>
+                  <div className="flex items-start gap-2 shrink-0">
+                    {peptide.category && (
+                      <span className="badge bg-dark-hover text-gray-400 text-xs capitalize">
+                        {peptide.category}
+                      </span>
+                    )}
+                    {info && (
+                      <div className="relative group/tooltip">
+                        <div className="p-1 rounded-lg bg-accent-primary/10 border border-accent-primary/30 cursor-help">
+                          <Info className="w-3.5 h-3.5 text-accent-primary" />
                         </div>
-                      )}
-                      {info.uses && info.uses.length > 0 && (
-                        <div className="text-xs">
-                          <span className="text-accent-primary font-medium">Uses:</span>
-                          <div className="text-gray-400">{info.uses.slice(0, 3).join(', ')}</div>
+                        <div className="absolute left-full top-0 ml-2 invisible group-hover/tooltip:visible opacity-0 group-hover/tooltip:opacity-100 transition-all duration-200 z-[100] pointer-events-none">
+                          <div className="bg-dark-card border border-accent-primary/30 rounded-lg p-3 shadow-glow-md w-64">
+                            <div className="text-xs font-semibold text-gray-100 mb-2">{peptide.name}</div>
+                            {info.dosage && (
+                              <div className="text-xs mb-2">
+                                <span className="text-accent-primary font-medium">Dosage:</span>
+                                <div className="text-gray-300 mt-0.5">{info.dosage.standard}</div>
+                                {info.dosage.range && (
+                                  <div className="text-gray-400 mt-0.5">Range: {info.dosage.range}</div>
+                                )}
+                              </div>
+                            )}
+                            {info.uses && info.uses.length > 0 && (
+                              <div className="text-xs">
+                                <span className="text-accent-primary font-medium">Uses:</span>
+                                <div className="text-gray-400 mt-0.5">{info.uses.slice(0, 3).join(', ')}</div>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             )
           })}
