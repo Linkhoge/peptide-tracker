@@ -42,14 +42,17 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow-glow-sm">
+              <button
+                onClick={() => setCurrentPage('home')}
+                className="flex items-center gap-3 group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow-glow-sm transition-all duration-300 group-hover:shadow-glow-md group-hover:scale-105">
                   <span className="text-xl font-bold">T</span>
                 </div>
-                <h1 className="text-2xl font-bold text-gradient">
+                <h1 className="text-2xl font-bold text-gradient transition-all duration-300 group-hover:scale-105">
                   Tracker
                 </h1>
-              </div>
+              </button>
               
               <nav className="hidden md:flex items-center gap-2">
                 <button
@@ -78,9 +81,9 @@ function App() {
             </div>
             
             {user?.isAnonymous && (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-dark-bg border border-dark-border rounded-lg">
-                <Shield className="w-4 h-4 text-accent-primary" />
-                <span className="text-sm text-gray-400">Private Mode</span>
+              <div className="group flex items-center gap-2 px-3 py-1.5 bg-dark-bg border border-dark-border rounded-lg transition-all duration-300 hover:border-accent-primary hover:shadow-glow-sm cursor-default">
+                <Shield className="w-4 h-4 text-accent-primary transition-all duration-300 group-hover:scale-110" />
+                <span className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">Private Mode</span>
               </div>
             )}
           </div>
