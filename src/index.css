@@ -52,56 +52,46 @@
 
 @layer components {
   .btn-primary {
-    @apply px-5 py-2.5 rounded-xl bg-gradient-to-b from-accent-primary via-[#f15656] to-accent-secondary text-white font-semibold transition-all duration-200;
+    @apply px-5 py-2.5 rounded-xl bg-gradient-to-r from-accent-primary to-accent-secondary text-white font-semibold transition-all duration-200;
     position: relative;
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    outline: 2px solid rgba(0, 0, 0, 0.8);
+    outline-offset: -2px;
     box-shadow: 
-      0 1px 0 rgba(255, 255, 255, 0.25) inset,
-      0 1px 1px rgba(0, 0, 0, 0.08),
-      0 3px 6px rgba(0, 0, 0, 0.3),
-      0 6px 16px rgba(239, 68, 68, 0.25),
-      0 0 0 1px rgba(0, 0, 0, 0.3);
+      0 1px 2px rgba(0, 0, 0, 0.5),
+      0 2px 8px rgba(0, 0, 0, 0.4);
   }
 
-  .btn-primary::before {
+  .btn-primary::after {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: 0.75rem;
-    padding: 1px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 50%, rgba(0, 0, 0, 0.1));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+    border: 1px solid rgba(0, 0, 0, 0.3);
     pointer-events: none;
   }
 
   .btn-primary:hover {
-    transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
     box-shadow: 
-      0 1px 0 rgba(255, 255, 255, 0.3) inset,
-      0 2px 2px rgba(0, 0, 0, 0.1),
-      0 6px 12px rgba(0, 0, 0, 0.4),
-      0 10px 24px rgba(239, 68, 68, 0.35),
-      0 0 0 1px rgba(0, 0, 0, 0.35);
+      0 2px 4px rgba(0, 0, 0, 0.6),
+      0 4px 12px rgba(0, 0, 0, 0.5),
+      0 2px 16px rgba(239, 68, 68, 0.15);
   }
 
   .btn-primary:active {
     transform: translateY(0px);
     box-shadow: 
-      0 1px 0 rgba(255, 255, 255, 0.2) inset,
-      0 1px 1px rgba(0, 0, 0, 0.1),
-      0 2px 4px rgba(0, 0, 0, 0.3),
-      0 4px 12px rgba(239, 68, 68, 0.2),
-      0 0 0 1px rgba(0, 0, 0, 0.3);
+      0 1px 2px rgba(0, 0, 0, 0.5),
+      0 2px 6px rgba(0, 0, 0, 0.4);
   }
 
   .card {
     @apply bg-dark-card border border-dark-border rounded-xl p-3.5 transition-all duration-300;
+    position: relative;
+    outline: 1px solid rgba(0, 0, 0, 0.5);
+    outline-offset: -1px;
     box-shadow: 
-      0 1px 3px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      0 1px 3px rgba(0, 0, 0, 0.4);
   }
 
   .card-glow {
@@ -113,8 +103,7 @@
     transform: translateY(-2px);
     box-shadow: 
       0 2px 8px rgba(0, 0, 0, 0.5),
-      0 8px 24px rgba(239, 68, 68, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      0 8px 24px rgba(239, 68, 68, 0.12);
   }
 
   .badge {
@@ -123,13 +112,15 @@
 
   .badge-glow {
     @apply badge bg-gradient-to-r from-accent-primary/10 to-accent-secondary/10 text-accent-primary border border-accent-primary/20;
+    outline: 1px solid rgba(0, 0, 0, 0.3);
+    outline-offset: -1px;
   }
 
   .input {
     @apply w-full px-3 py-2.5 bg-dark-bg border border-dark-border rounded-xl text-gray-100 text-sm placeholder-gray-500 focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 focus:outline-none transition-all;
-    box-shadow: 
-      inset 0 1px 3px rgba(0, 0, 0, 0.3),
-      0 1px 0 rgba(255, 255, 255, 0.03);
+    outline: 1px solid rgba(0, 0, 0, 0.5);
+    outline-offset: -1px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
   }
 
   .modal-overlay {
@@ -143,33 +134,34 @@
   .shadow-glow-sm {
     box-shadow: 
       0 2px 8px rgba(0, 0, 0, 0.5),
-      0 4px 16px rgba(239, 68, 68, 0.12);
+      0 4px 16px rgba(239, 68, 68, 0.1);
   }
 
   .shadow-glow-md {
     box-shadow: 
       0 4px 12px rgba(0, 0, 0, 0.6),
-      0 8px 24px rgba(239, 68, 68, 0.18);
+      0 8px 24px rgba(239, 68, 68, 0.15);
   }
 
   .shadow-glow-lg {
     box-shadow: 
       0 8px 16px rgba(0, 0, 0, 0.6),
-      0 12px 32px rgba(239, 68, 68, 0.2);
+      0 12px 32px rgba(239, 68, 68, 0.18);
   }
 
   .shadow-glow-xl {
     box-shadow: 
       0 12px 24px rgba(0, 0, 0, 0.7),
-      0 16px 48px rgba(239, 68, 68, 0.25);
+      0 16px 48px rgba(239, 68, 68, 0.2);
   }
 
   .glass-card {
     @apply px-4 py-3 rounded-xl backdrop-blur-xl bg-dark-card/50 border border-accent-primary/20;
+    outline: 1px solid rgba(0, 0, 0, 0.4);
+    outline-offset: -1px;
     box-shadow: 
       0 2px 8px rgba(0, 0, 0, 0.5),
-      0 4px 16px rgba(239, 68, 68, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      0 4px 16px rgba(239, 68, 68, 0.08);
   }
 
   /* 3D Molecule */
@@ -335,12 +327,12 @@
   0%, 100% {
     box-shadow: 
       0 2px 8px rgba(0, 0, 0, 0.5),
-      0 4px 16px rgba(239, 68, 68, 0.1);
+      0 4px 16px rgba(239, 68, 68, 0.08);
   }
   50% {
     box-shadow: 
       0 2px 8px rgba(0, 0, 0, 0.5),
-      0 8px 24px rgba(239, 68, 68, 0.15);
+      0 8px 24px rgba(239, 68, 68, 0.12);
   }
 }
 
@@ -367,7 +359,7 @@
 @keyframes float {
   0%, 100% {
     transform: translateY(0) translateX(0);
-  opacity: 0.3;
+    opacity: 0.3;
   }
   50% {
     transform: translateY(-100px) translateX(50px);
