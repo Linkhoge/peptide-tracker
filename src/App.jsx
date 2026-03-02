@@ -25,6 +25,10 @@ function App() {
     return () => unsubscribe()
   }, [])
 
+  const handleLogoClick = () => {
+    window.location.reload()
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -43,10 +47,14 @@ function App() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <button
-                onClick={() => setCurrentPage('home')}
+                onClick={handleLogoClick}
                 className="flex items-center gap-3 group"
               >
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow-glow-sm transition-all duration-300 group-hover:shadow-glow-md group-hover:scale-105">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center transition-all duration-300 group-hover:scale-105"
+                  style={{
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                  }}
+                >
                   <span className="text-xl font-bold">T</span>
                 </div>
                 <h1 className="text-2xl font-bold text-gradient transition-all duration-300 group-hover:scale-105">
@@ -81,7 +89,11 @@ function App() {
             </div>
             
             {user?.isAnonymous && (
-              <div className="group flex items-center gap-2 px-3 py-1.5 bg-dark-bg border border-dark-border rounded-lg transition-all duration-300 hover:border-accent-primary hover:shadow-glow-sm cursor-default">
+              <div className="group flex items-center gap-2 px-3 py-1.5 bg-dark-bg border border-dark-border rounded-lg transition-all duration-300 hover:border-accent-primary cursor-default"
+                style={{
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03)'
+                }}
+              >
                 <Shield className="w-4 h-4 text-accent-primary transition-all duration-300 group-hover:scale-110" />
                 <span className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">Private Mode</span>
               </div>
