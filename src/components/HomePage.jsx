@@ -102,13 +102,16 @@ function HomePage({ userId }) {
                 and maintain perfect adherence—all in one powerful, intuitive interface.
               </p>
 
-              {/* Big Plus Button */}
+              {/* Rounded Square Plus Button */}
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="group relative inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+                className="group relative inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-3xl hover:rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-[0_8px_30px_rgba(168,85,247,0.4)]"
+                style={{
+                  boxShadow: '0 4px 20px rgba(168, 85, 247, 0.25)'
+                }}
                 aria-label="Create your first stack"
               >
-                <Plus className="w-12 h-12 text-white transition-transform group-hover:rotate-90 duration-500" strokeWidth={2.5} />
+                <Plus className="w-10 h-10 text-white transition-transform group-hover:rotate-90 duration-500" strokeWidth={2.5} />
               </button>
               
               <p className="text-gray-500 mt-6 text-sm font-medium">Create Your First Stack</p>
