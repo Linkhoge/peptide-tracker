@@ -51,38 +51,136 @@
 }
 
 @layer components {
+  /* Primary Filled Button (dark background) */
   .btn-primary {
-    @apply px-5 py-2.5 rounded-xl bg-gradient-to-r from-accent-primary to-accent-secondary text-white font-semibold transition-all duration-200;
-    position: relative;
-    outline: 2px solid rgba(0, 0, 0, 0.8);
-    outline-offset: -2px;
-    box-shadow: 
-      0 1px 2px rgba(0, 0, 0, 0.5),
-      0 2px 8px rgba(0, 0, 0, 0.4);
-  }
-
-  .btn-primary::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 0.75rem;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    pointer-events: none;
+    @apply px-6 py-3 rounded-md bg-gray-900 text-white font-medium text-sm tracking-wide uppercase transition-all duration-200;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.15em;
   }
 
   .btn-primary:hover {
+    @apply bg-gray-800;
+    border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
-    box-shadow: 
-      0 2px 4px rgba(0, 0, 0, 0.6),
-      0 4px 12px rgba(0, 0, 0, 0.5),
-      0 2px 16px rgba(239, 68, 68, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .btn-primary:active {
-    transform: translateY(0px);
-    box-shadow: 
-      0 1px 2px rgba(0, 0, 0, 0.5),
-      0 2px 6px rgba(0, 0, 0, 0.4);
+    transform: translateY(0);
+  }
+
+  /* Secondary Outlined Button (white background with border) */
+  .btn-secondary {
+    @apply px-6 py-3 rounded-md bg-white text-gray-900 font-medium text-sm tracking-wide uppercase transition-all duration-200;
+    border: 2px solid #e5e7eb;
+    letter-spacing: 0.15em;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-gray-50;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Tertiary Outlined Button (transparent with border) */
+  .btn-tertiary {
+    @apply px-6 py-3 rounded-md bg-transparent text-gray-700 font-medium text-sm tracking-wide uppercase transition-all duration-200;
+    border: 2px solid #e5e7eb;
+    letter-spacing: 0.15em;
+  }
+
+  .btn-tertiary:hover {
+    @apply bg-gray-50;
+    border-color: #d1d5db;
+  }
+
+  /* Gray Filled Button */
+  .btn-gray {
+    @apply px-6 py-3 rounded-md bg-gray-400 text-white font-medium text-sm tracking-wide uppercase transition-all duration-200;
+    letter-spacing: 0.15em;
+  }
+
+  .btn-gray:hover {
+    @apply bg-gray-500;
+    transform: translateY(-1px);
+  }
+
+  /* Social Media Button Base */
+  .btn-social {
+    @apply px-6 py-3 rounded-md font-medium text-sm tracking-wide uppercase transition-all duration-200 flex items-center gap-3;
+    letter-spacing: 0.15em;
+  }
+
+  /* Facebook Button */
+  .btn-facebook {
+    @apply btn-social bg-gray-900 text-white;
+  }
+
+  .btn-facebook:hover {
+    @apply bg-gray-800;
+    transform: translateY(-1px);
+  }
+
+  .btn-facebook-outline {
+    @apply btn-social bg-white text-gray-600;
+    border: 2px solid #e5e7eb;
+  }
+
+  .btn-facebook-outline:hover {
+    @apply bg-gray-50;
+  }
+
+  /* Twitter Button */
+  .btn-twitter {
+    @apply btn-social bg-gray-900 text-white;
+  }
+
+  .btn-twitter:hover {
+    @apply bg-gray-800;
+    transform: translateY(-1px);
+  }
+
+  .btn-twitter-outline {
+    @apply btn-social bg-white text-gray-600;
+    border: 2px solid #e5e7eb;
+  }
+
+  /* Google Button */
+  .btn-google {
+    @apply btn-social bg-gray-900 text-white;
+  }
+
+  .btn-google:hover {
+    @apply bg-gray-800;
+    transform: translateY(-1px);
+  }
+
+  .btn-google-outline {
+    @apply btn-social bg-white text-gray-600;
+    border: 2px solid #e5e7eb;
+  }
+
+  /* Search Button */
+  .btn-search {
+    @apply px-8 py-3 rounded-md bg-gray-900 text-white font-medium text-sm tracking-wide uppercase transition-all duration-200;
+    letter-spacing: 0.15em;
+  }
+
+  .btn-search:hover {
+    @apply bg-gray-800;
+    transform: translateY(-1px);
+  }
+
+  /* Sign Up Button with Icon */
+  .btn-signup {
+    @apply px-6 py-3 rounded-md bg-gray-900 text-white font-medium text-sm tracking-wide uppercase transition-all duration-200 flex items-center gap-2;
+    letter-spacing: 0.15em;
+  }
+
+  .btn-signup:hover {
+    @apply bg-gray-800;
+    transform: translateY(-1px);
   }
 
   .card {
