@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { doc, updateDoc, deleteDoc, arrayUnion } from 'firebase/firestore'
 import { db } from '../firebase/config'
 import { Check, Clock, AlertCircle, Zap, X, Pause, Play, Edit } from 'lucide-react'
 import { formatDistanceToNow, isPast, addDays, differenceInDays } from 'date-fns'
@@ -45,10 +45,16 @@ function PeptideCard({ peptide, userId }) {
       const cycleDays = peptide.frequency === 'daily' ? 1 : 7
       const newNextDue = addDays(now, cycleDays)
 
+      // Track dose in history array for analytics
       await updateDoc(doc(db, 'users', userId, 'peptides', peptide.id), {
         lastTaken: now,
         nextDue: newNextDue,
-        takenCount: (peptide.takenCount || 0) + 1
+        takenCount: (peptide.takenCount || 0) + 1,
+        doseHistory: arrayUnion({
+          takenAt: now,
+          cycleStatus: peptide.cycleStatus || 'on',
+          dosage: peptide.dosage
+        })
       })
     } catch (error) {
       console.error('Error updating peptide:', error)
