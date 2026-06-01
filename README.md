@@ -1,104 +1,54 @@
-# Tracker - Peptide Dosage Management
+# Peptide Tracker
 
-A modern, educational-style web app for tracking peptide cycles, dosages, and schedules with real-time monitoring.
+A private, encrypted web app for tracking peptide protocols, dosage cycles, and adherence — built with React, Firebase, and Tailwind CSS.
 
 ## Features
 
-- 🔒 **Anonymous Authentication** - Start tracking immediately without signup
-- 🔍 **Smart Search** - Real-time peptide search with caching via Peppy API
-- 📅 **Cycle Tracking** - Monitor daily/weekly dosages with automatic reminders
-- ⏰ **Overdue Indicators** - Visual alerts when doses are missed
-- 📊 **Clean UI** - Modern educational design with smooth animations
-- 🔄 **Real-time Sync** - Firebase Firestore for instant updates
+- 🔒 **Fully private** — Firebase anonymous auth, data scoped per user
+- 💉 **Peptide search** — 80+ peptides with category filtering
+- 🔄 **Cycle tracking** — On/off day cycles with visual progress
+- 📅 **Dose scheduling** — Daily and weekly frequency support
+- 📊 **Dose history** — Per-peptide log with timestamps
 
-## Setup
+## Stack
 
-1. **Clone the repository**
-```bash
-git clone https://github.com/Linkhoge/peptide-tracker.git
-cd peptide-tracker
-```
+| Layer | Tech |
+|---|---|
+| Frontend | React 18 + Vite |
+| Styling | Tailwind CSS v3 |
+| Database | Firebase Firestore |
+| Auth | Firebase Anonymous Auth |
+| Icons | Lucide React |
+| Charts | Recharts |
 
-2. **Install dependencies**
+## Getting Started
+
 ```bash
 npm install
-```
-
-3. **Configure Firebase**
-- Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
-- Enable Anonymous Authentication (Authentication → Sign-in method → Anonymous)
-- Create Firestore database (Firestore Database → Create database)
-- Copy your config from Project Settings → General → Your apps
-- Create `.env` file:
-```bash
-cp .env.example .env
-```
-- Fill in your Firebase config values in `.env`
-
-4. **Run development server**
-```bash
+cp .env.example .env    # fill in your Firebase keys
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+## Environment Variables
 
-## Deployment
+See `.env.example` for required keys. Never commit `.env` directly.
 
-### Firebase Hosting (Recommended)
-```bash
-npm install -g firebase-tools
-firebase login
-firebase init hosting
-npm run build
-firebase deploy
-```
+## Firestore Rules
 
-### Vercel
-```bash
-npm i -g vercel
-vercel --prod
-```
+Rules enforce:
+- Auth required for all reads/writes
+- `name`, `dosage`, `frequency`, `createdAt` required on create
+- `frequency` must be `daily` or `weekly`
+- `createdAt` and `name` are immutable after creation
 
 ## Project Structure
 
 ```
 src/
 ├── components/
-│   ├── HomePage.jsx          # Main stack view
-│   ├── PeptideCard.jsx       # Individual peptide display
-│   ├── AddPeptideModal.jsx   # Add new peptide form
-│   └── SearchAutocomplete.jsx # Peptide search
-├── firebase/
-│   ├── config.js             # Firebase setup
-│   └── auth.js               # Anonymous auth
-├── utils/
-│   └── searchCache.js        # Search caching logic
-└── App.jsx                   # Main app wrapper
+│   ├── shared/          # Reusable UI (ModalShell, DosageInput, etc.)
+│   └── *.jsx            # Page-level components
+├── hooks/               # usePeptides, useCycleProgress
+├── firebase/            # config.js, auth.js
+└── utils/               # peptideDoc.js, searchCache.js
 ```
-
-## Tech Stack
-
-- **Frontend**: React 18 + Vite
-- **Styling**: Tailwind CSS with custom animations
-- **Backend**: Firebase (Auth + Firestore)
-- **Icons**: Lucide React
-- **Date Utils**: date-fns
-- **API**: Peppy HQ Peptide Database
-
-## Data Schema
-
-Firestore collection structure:
-```
-users/{userId}/peptides/{peptideId}
-  - name: string
-  - dosage: string
-  - frequency: 'daily' | 'weekly'
-  - lastTaken: timestamp | null
-  - nextDue: timestamp
-  - takenCount: number
-  - createdAt: timestamp
-```
-
-## License
-
-MIT License - Built with ❤️ by Tom Pets
